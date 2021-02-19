@@ -2,7 +2,11 @@
 
 ## Created with Svelte and Socket-io.
 
-## Available Scripts
+## TODO: 
+- 	Fix CSS 
+-	Add animations
+-	Refactor Admin and Game components
+-	Fix Admin Panel
 
 ### npm start
 
