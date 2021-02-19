@@ -1,0 +1,55 @@
+<script>
+  import { Router, Route, Link } from "svelte-routing";
+  import Header from "./component/Header.svelte";
+  import Footer from "./component/Footer.svelte";
+  import Home from "./component/Home.svelte";
+  import Login from "./component/Login.svelte";
+  import Admin from "./component/Admin.svelte";
+  import Game from "./component/Game.svelte";
+  import Settings from "./component/Settings.svelte";
+  import { onMount } from "svelte";
+
+  onMount(async () => {
+    document.getElementsByTagName("body")[0].style.margin = "0px";
+    const orig = document.getElementById("orig");
+    const dummy = document.getElementById("dummy");
+    dummy.style.width = orig.offsetWidth + "px";
+  });
+
+  export let url = "";
+  import io from "socket.io-client";
+  const socket = io("https://tlk-qoiz-server-prod.herokuapp.com/");
+  let user = {};
+
+  socket.on("connect", (d) => {
+    console.log("socket connected");
+  });
+</script>
+
+<Settings {socket}></Settings>
+
+<main id="app">
+  <Router {url}>
+    <Header />
+    <div>
+      <Route path="/"><Home {user} /></Route>
+      <Route path="login"><Login bind:user /></Route>
+      <Route path="admin"><Admin {socket} {user} /></Route>
+      <Route path="game"><Game {socket} {user} /></Route>
+    </div>
+  </Router>
+  <Footer />
+</main>
+
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,600;1,700;1,800;1,900&family=Roboto:wght@100&display=swap");
+  #app {
+    font-family: Overpass, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 10em;
+  }
+  
+</style>
