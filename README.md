@@ -2,6 +2,8 @@
 
 ## Created with Svelte and Socket-io.
 
+### Running at https://newsc.one
+
 ## TODO: 
 - 	Fix CSS 
 -	Add animations
