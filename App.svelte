@@ -8,22 +8,30 @@
   import Game from "./component/Game.svelte";
   import Settings from "./component/Settings.svelte";
   import { onMount } from "svelte";
+  import io from "socket.io-client";
 
+  
   onMount(async () => {
+    // Quick fix for setting body margin to 0 
     document.getElementsByTagName("body")[0].style.margin = "0px";
+    // The header has a linkholder element and a empy dummy element on the other side of the logo
     const orig = document.getElementById("orig");
     const dummy = document.getElementById("dummy");
+    // Set the dummy element to be of same width as the linkholder so they are flexed correctly
     dummy.style.width = orig.offsetWidth + "px";
   });
 
+  // Global variables which can be passed around to child components
+  // the url variable is needed for the Router
   export let url = "";
-  import io from "socket.io-client";
+  // Creates a socket object which will handle all the socket communications
   const socket = io("https://tlk-qoiz-server-prod.herokuapp.com/");
+  // Global user variable
   let user = {};
 
-  socket.on("connect", (d) => {
-    console.log("socket connected");
-  });
+  //socket.on("connect", (d) => {
+  //  console.log("socket connected");
+  //});
 </script>
 
 <Settings {socket}></Settings>

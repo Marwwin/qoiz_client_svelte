@@ -5,15 +5,21 @@
   import AdminQuiz from "./AdminQuiz.svelte";
   import AdminGame from "./AdminGame.svelte";
 
+  // Global or shared variables
   export let socket;
   let currentlyLoadedQuiz;
   export let user;
   let waitingRoom;
 
+  // Local variables
   let displayQuestionsPanel = false;
   let displayGamePanel = false;
   let displayQuizPanel = false;
+  let questionsDB;
+  let quizsDB;
 
+  // Quick fix for making a switchable view between different panels
+  // Check the button which was click show the corresponding element, hide the 2 others
   function showAdminElement(ev) {
     if (ev.target.innerHTML == "Game") {
       displayGamePanel = !displayGamePanel;
@@ -30,9 +36,8 @@
     }
   }
 
-  let questionsDB;
-  let quizsDB;
-
+  // Get questions from database
+  // I think this can be removed questionsDatabase and quizDatabase now own component
   function populateQuestions() {
     fetch("https://tlk-qoiz-server-prod.herokuapp.com/questions/")
       .then((res) => res.json())
@@ -40,6 +45,7 @@
         questionsDB = data;
       });
   }
+  // Get quizzes
   function populateQuizs() {
     fetch("https://tlk-qoiz-server-prod.herokuapp.com/quizs/")
       .then((res) => res.json())
@@ -47,6 +53,8 @@
         quizsDB = data;
       });
   }
+  // Get waiting room
+// This can also be romved. waiting room is its own component
   function getWR() {
     console.log("get Waiting room");
     socket.emit("admin", { type: "getWaitingRoom" });

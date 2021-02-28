@@ -11,14 +11,17 @@
   export let questionsDB = [];
   export let user;
 
+  // Add the current answer to the list of answers
   function addAnswer() {
     answers = [...answers, newAnswer];
   }
+  // removes the selected answer from the list
   function removeAnswer(i) {
     answers = answers
       .slice(0, i.target.value)
       .concat(answers.slice(i.target.value + 1));
   }
+  // Save the question and send it to the server
   function saveQuestion() {
     console.log(user.token)
     const theJson = {

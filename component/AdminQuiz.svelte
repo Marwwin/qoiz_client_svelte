@@ -1,23 +1,30 @@
 <script>
+  // Local varibles
   let displayNewQuiz = false;
   let displayLoadQuiz = false;
   let quizName;
+
+  // global shared variables
   export let currentlyLoadedQuiz;
-  
   export let user;
   export let questionsDB;
   export let quizsDB;
 
+  // Save the inputed quiz into the database
   function saveQuiz() {
+    // Get all checked questions ids as a number
     const checkedQuestions = Array.from(document.getElementsByClassName("quiz"))
       .filter((x) => x.getElementsByTagName("input")[0].checked)
       .map((x) => Number(x.firstElementChild.id));
+    // Get the checked questions from local database
     const newQuizQuestions = checkedQuestions.map((x) => questionsDB[x]);
+    // Make a json object with required elements
     const theJson = {
       name: quizName,
       quizQuestions: newQuizQuestions,
       players: [],
     };
+    // Post to databse
     fetch("https://tlk-qoiz-server-prod.herokuapp.com/quizs", {
       method: "POST",
       headers: {
@@ -30,6 +37,7 @@
       .then((data) => data.json())
       .then((result) => (currentlyLoadedQuiz = result.quiz));
   }
+  // Load the clicked quiz and then switch to the game view buy clicking the button
   function setLoadedQuiz(i){
     currentlyLoadedQuiz = quizsDB[i.target.id];
     document.getElementById("admin_game").click();

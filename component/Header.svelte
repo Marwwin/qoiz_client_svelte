@@ -1,5 +1,6 @@
 <script>
   import {Link} from "svelte-routing";
+  // Quick fix remove body padding
   document.getElementsByTagName("body")[0].style.padding = 0;
 </script>
 

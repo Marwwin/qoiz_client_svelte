@@ -1,9 +1,13 @@
 <script>
+  // Variables
   export let waitingRoom = [];
   export let socket;
   export let currentlyLoadedQuiz;
   let gameStats = [];
 
+  // Reactive variable, (computed)
+  // PlayerScore maps the data from gameStats to a more convenient datastructure
+  // TODO: Clean this up a bit
   $: playerScore = gameStats.map((player, i) => {
     let t = {
       index: i,
@@ -28,28 +32,31 @@
     };
     return t;
   });
-
+  // When recieving the data from a player that they finished their game save it in gameStats
   socket.on("adminGameOver", (data) => {
     console.log(data);
     gameStats = [...gameStats, data];
     console.log(playerScore);
   });
 
+  // Send message to server to start the game loaded in currentlyLoadedQuiz
+  
   function startGame() {
     socket.emit("admin", { type: "startGame", quiz: currentlyLoadedQuiz });
   }
 
+  // To change an answer from true to false
   function changeTrueFalse(t) {
     const target = t.target.id.split(" ");
+    // Get index for player
     const playerIndex = playerScore.filter((x) => x.player == target[0]);
-    playerScore[playerIndex[0].index].trueOrFalse[target[1]] = !playerScore[
-      playerIndex[0].index
-    ].trueOrFalse[target[1]];
-    playerScore[playerIndex[0].index].score = playerScore[
-      playerIndex[0].index
-    ].trueOrFalse.filter((x) => x == true).length;
+    // Swap the value for the clicked answer from true to false and vice versa in the true or false list.
+    playerScore[playerIndex[0].index].trueOrFalse[target[1]] = !playerScore[playerIndex[0].index].trueOrFalse[target[1]];
+    // Set score to be the amount of true values in the trueOrFalse list
+    playerScore[playerIndex[0].index].score = playerScore[playerIndex[0].index].trueOrFalse.filter((x) => x == true).length;
   }
 
+  // When player is graded send them their scores and answers
   function sendResults() {
     let data = {
       game: gameStats[0].game,

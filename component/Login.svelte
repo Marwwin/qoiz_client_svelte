@@ -1,11 +1,14 @@
 <script>
+  
   import { Link } from "svelte-routing";
+
   export let user = {};
 
   let userLoggedIn = false;
   let username = "";
   let password = "";
 
+  // Try to login the user
   function loginUser() {
     fetch("https://tlk-qoiz-server-prod.herokuapp.com/users/login/", {
       method: "POST",
@@ -13,6 +16,7 @@
         Accept: "application/json",
         "Content-Type": "application/json",
       },
+      // Set username and password in body
       body: JSON.stringify({
         username: username,
         password: password,
@@ -20,7 +24,6 @@
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
         if (
           res.message != "Authentication failed (check your email and password)"
         ) {
@@ -29,6 +32,8 @@
         }
       });
   }
+  // Quick fix for getting back to the home page.
+  // This function is run if the user is logged in
  function finc(e){
    setTimeout(d => e.click(),100)
   // e.click()

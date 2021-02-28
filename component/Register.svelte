@@ -2,12 +2,15 @@
   let username = "";
   let password = "";
   //fetch("http://desolate-lowlands-50870.herokuapp.com/users/signup/", {
+
+  // Register user
   fetch("https://tlk-qoiz-server-prod.herokuapp.com/users/signup/", {
     method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
     },
+    // Get inputted username and password
     body: JSON.stringify({
       username: username,
       password: password,
@@ -16,6 +19,7 @@
     if (res.statusText == "Created") {
       //  alert("User " + this.username + " Created");
     }
+    
   });
 </script>
 

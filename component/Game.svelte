@@ -6,6 +6,7 @@
   import WaitingRoom from "./WaitingRoom.svelte";
   import _ from 'lodash';
 
+
   export let user;
   export let socket;
   let readyState = false;
@@ -22,15 +23,20 @@
 
 ///// FUNCTIONS
 
+  // Tell the server that you are ready to play or cancel out of playing
   function getReady() {
     console.log("sending");
+    // Player Name and ID
     const data = { name: user.id[0].username, id: user.id[0]._id };
+    // Depending on readyState add or remove player from Waiting Room
     readyState
       ? socket.emit("removeplayer", data)
       : socket.emit("newplayer", data);
+    // Switch readyState 
     readyState = !readyState;
   }
 
+  // Start the Timer
   function startTimer() {
     console.log("starting timer");
     timer = setInterval(() => {
@@ -41,71 +47,86 @@
       }
     }, 1000);
   }
+  // Stop Timer ask server for next round 
   function stopTimer() {
+    // clear timer
     clearInterval(timer);
     console.log("stop timer");
+    // Send the server the answer 
     socket.emit("roundFinished", {
       playerID: user.id[0]._id,
       player: user.id[0].username,
       answer: playerAnswer,
       game: currentGame,
     });
+    // Lock answer input field
     let el = document.getElementById("answer_input");
     if (el?.disabled) {
       lockAnswerInput();
     }
   }
+  // Lock input text field
   function lockAnswerInput() {
     let el = document.getElementById("answer_input");
     el.disabled = !el.disabled;
     lockAnswer = el.disabled;
   }
+  // If player presses enter click the submit button
   function pressEnter(ev) {
     if (ev.keyCode == 13) {
       let btn = document.getElementById("submit_button");
       btn.click();
     }
   }
+  // Set focus on input text field when the element is created
   function init(el) {
     el.focus();
   }
 
 ///// SOCKETS 
+  // Show message from admin to user
+  // Is not implemented at the admin side at the moment
   socket.on("messageChannel", (data) => {
     console.log(data);
     message = data;
   });
 
+  // Load the game recieved from the server 
   socket.on("starting", (data) => {
     currentGame = data.gameID;
+    // Set the time of timer
     timerClock = data.time;
+    // Start timer
     startTimer();
   });
+  // When the server signals the game is over show message to user and reset variables
   socket.on("gameOver", (data) => {
     message = { message: "Game Over Thanks for Playing!", list: [] };
     currentQuestion = "";
     gameOver = true;
     // correctAnswers = data;
   });
+  // When you recieve a new question
   socket.on("newRound", (data) => {
+    // reset input field
     playerAnswer = "";
+    // set timer for question
     timerClock = data.time;
+    // Show question
     currentQuestion = data.question;
     startTimer();
   });
+  // When recieving the results from the whole game show them for the user
   socket.on("gameResults", (data) => {
+    // save score
     gameScore = data.score;
+    // map the answers to a easier datastructures
     correctAnswer = _.map(data.questions,(x, i) => [
       x,
       data.correctAnswers[i],
       data.playerAnswers[i],
       data.trueOrFalse[i]]);
-   // correctAnswers = data.questions.map((x, i) => [
-   //   x,
-   //   data.correctAnswers[i],
-   //   data.playerAnswers[i],
-   //   data.trueOrFalse[i],
-   // ]);
+
   });
 </script>
 

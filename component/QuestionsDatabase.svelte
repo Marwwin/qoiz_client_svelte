@@ -3,25 +3,29 @@
   import _ from "lodash";
   import {fade, fly} from 'svelte/transition';
 
+  // Local variables
   let pageNumber = 0;
   let prevNumber = 0;
   let direction = true;
 
+  // Computed variables
+  // This tries to control the animation when scrolling thru questions
+  // It works but a bit funky when changing direction 
   $: { 
     if (pageNumber <= prevNumber){
-    direction = false;
+      direction = false;
     }
     else {
       direction = true;
     }
     prevNumber = pageNumber;
-    console.log(direction);
   }
 
   let questionsDB;
 
 
-
+// This is not in use anymore
+// Can Probably Be Removed
   function populateQuestions() {
     fetch("https://tlk-qoiz-server-prod.herokuapp.com/questions/")
       .then((res) => res.json())

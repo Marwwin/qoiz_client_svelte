@@ -8,15 +8,18 @@ let waitingRoom;
 
 function getWR() {
     socket.emit("update-waiting-room");
-
   }
   socket.on("waiting-room", (data) => {
     waitingRoom = data;
   });
 
   onMount(async () => {
+    // GetWR
     getWR();
+    
+    // Is this necessary?? Maybe?
     await tick()
+    // Quick fixes for setting the element on the right places
     let el = document.getElementById("waiting_room");
     el.style.left = window.innerWidth - el.clientWidth +"px";
     el.style.top = document.getElementById("head").clientHeight + "px";
